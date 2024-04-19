@@ -20,28 +20,41 @@ def collect(games_info, debug: bool = False):
             res: dict = game["results"]
             # bookmakers: set = set()
             for key in res.keys():
-                info_game = info
-                info_game["bookmaker"] = key
                 # bookmakers.add(key)
                 odds_update = dict()
                 odds_update = res[key]["odds_update"]
                 odds: list = list()
                 for key_2 in odds_update.keys():
                     odds.append(key_2)
-                for i in odds:
-                    if i == "151_1" and len(res[key]["odds"]["end"]) != 0:
-                        # print(res[key]["odds"]["start"])
-                        # print(res[key]["odds"]["start"][i])
-                        info_game[f"{i}_home_od"] = float(res[key]["odds"]["start"][i]["home_od"])
-                        info_game[f"{i}_away_od"] = float(res[key]["odds"]["start"][i]["away_od"])
-                        info_game[f"{i}_add_time"] = datetime.datetime.fromtimestamp(int(res[key]["odds"]["start"][i]["add_time"]), tz=tz)
-                if "151_1_add_time" not in info_game.keys():
-                    break
-                else:
-                    if debug:
-                        print(info_game)
+                # for i in odds:
+                #     info_game = info.copy()
+                #     info_game["bookmaker"] = key
+                #
+                #     if i == "151_1" and len(res[key]["odds"]["end"]) != 0:
+                #         # print(res[key]["odds"]["start"])
+                #         # print(res[key]["odds"]["start"][i])
+                #         info_game[f"{i}_home_od"] = float(res[key]["odds"]["end"][i]["home_od"])
+                #         info_game[f"{i}_away_od"] = float(res[key]["odds"]["end"][i]["away_od"])
+                #         info_game[f"{i}_add_time"] = datetime.datetime.fromtimestamp(
+                #             int(res[key]["odds"]["end"][i]["add_time"]), tz=tz
+                #         )
+                #         all_games.append(info_game)
+
+                info_game = info.copy()
+                info_game["bookmaker"] = key
+
+                i = "151_1"
+                if (i in odds) and len(res[key]["odds"]["end"]) != 0:
+                    info_game[f"{i}_home_od"] = float(res[key]["odds"]["end"][i]["home_od"])
+                    info_game[f"{i}_away_od"] = float(res[key]["odds"]["end"][i]["away_od"])
+                    info_game[f"{i}_add_time"] = datetime.datetime.fromtimestamp(
+                        int(res[key]["odds"]["end"][i]["add_time"]), tz=tz
+                    )
                     all_games.append(info_game)
-                    break
+
+                if debug:
+                    print(info_game)
+
 
     return all_games
     # info["bookmaker"] = bookmakers

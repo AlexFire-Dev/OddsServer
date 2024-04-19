@@ -37,8 +37,11 @@ def create_db_records(data: list) -> [OddData]:
 @app.task
 def update_db():
     manager = APIManager()
-    games_info = manager.get_data(use_net=False)
+    games_info = manager.get_data(use_net=True)
+    print(json.dumps(games_info, indent=4))
     games_info = collect(games_info, debug=False)
+    print(len(games_info))
+    print(games_info)
 
     data_to_add = create_db_records(games_info)
     print("Records to add:", len(data_to_add))
