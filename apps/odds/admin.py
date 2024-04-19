@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import OddData
+
+
+@admin.register(OddData)
+class OddDataAdmin(admin.ModelAdmin):
+    list_display = ("game_id", "od_add_time", "stamp")

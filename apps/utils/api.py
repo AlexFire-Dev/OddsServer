@@ -73,17 +73,19 @@ class APIManager:
     def get_data(self, use_net: bool = False, debug: bool = False):
         if use_net:
             games = asyncio.run(self.get_games())
-            with open("get_games.json", 'r') as file:
+            with open("temp/get_games.json", 'r') as file:
                 json.dump(games, file, indent=4)
 
             games_info = asyncio.run(self.get_games_info(games))
-            with open("get_games_info.json", 'w') as file:
+            with open("temp/get_games_info.json", 'w') as file:
                 json.dump(games_info, file, indent=4)
 
         else:
-            with open("get_games.json", 'r') as file:
+            print(os.getcwd())
+
+            with open("temp/get_games.json", 'r') as file:
                 games = json.load(file)
-            with open("get_games_info.json", 'r') as file:
+            with open("temp/get_games_info.json", 'r') as file:
                 games_info = json.load(file)
 
         if debug:
