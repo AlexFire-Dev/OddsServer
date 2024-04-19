@@ -1,0 +1,9 @@
+.idea/
+.venv/
+
+*.sqlite3
+*.json
+*.env
+
+/static/
+/media/
