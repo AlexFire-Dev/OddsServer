@@ -13,7 +13,8 @@ class APIManager:
 
         self.base_address = os.getenv("API_ADDRESS")
 
-        print(self.login, self.token)
+
+        print("Logged in as:", self.login)
 
     def get_default_context(self, task: str) -> dict:
         context = {
@@ -69,7 +70,7 @@ class APIManager:
             result = await asyncio.gather(*tasks)
             return result
 
-    def get_data(self, use_net: bool = False):
+    def get_data(self, use_net: bool = False, debug: bool = False):
         if use_net:
             games = asyncio.run(self.get_games())
             with open("get_games.json", 'r') as file:
@@ -85,7 +86,7 @@ class APIManager:
             with open("get_games_info.json", 'r') as file:
                 games_info = json.load(file)
 
-        print(len(games), games)
-        print(len(games_info), games_info)
+        if debug:
+            print(len(games_info), games_info)
 
         return games_info
