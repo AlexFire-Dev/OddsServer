@@ -16,6 +16,7 @@ class OddData(models.Model):
     od_add_time = models.DateTimeField()
 
     stamp = models.CharField(max_length=64, unique=True)
+    result = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.stamp

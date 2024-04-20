@@ -10,11 +10,9 @@ class APIManager:
     def __init__(self):
         self.login = os.getenv("API_LOGIN")
         self.token = os.getenv("API_TOKEN")
+        print("Logged in as:", self.login)
 
         self.base_address = os.getenv("API_ADDRESS")
-
-
-        print("Logged in as:", self.login)
 
     def get_default_context(self, task: str) -> dict:
         context = {
@@ -31,7 +29,7 @@ class APIManager:
         async with aiohttp.ClientSession() as session:
             context = self.get_default_context("predata")
             context["sport"] = "esport"
-            context["day"] = "20240420" # today
+            context["day"] = "20240420"  # today
 
             url = self.create_url("api/get.php/", **context)
 
@@ -73,15 +71,17 @@ class APIManager:
     def get_data(self, use_net: bool = False, debug: bool = False):
         if use_net:
             games = asyncio.run(self.get_games())
-        #     with open("temp/get_games.json", 'r') as file:
-        #         json.dump(games, file, indent=4)
-        #
             games_info = asyncio.run(self.get_games_info(games))
-        #     with open("temp/get_games_info.json", 'w') as file:
-        #         json.dump(games_info, file, indent=4)
+
+            # with open("temp/get_games.json", 'w') as file:
+            #     json.dump(games, file, indent=4)
+            #
+            # with open("temp/get_games_info.json", 'w') as file:
+            #     json.dump(games_info, file, indent=4)
 
         if not use_net:
-            print(os.getcwd())
+            if debug:
+                print(os.getcwd())
 
             with open("temp/get_games.json", 'r') as file:
                 games = json.load(file)

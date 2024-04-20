@@ -163,6 +163,7 @@ cython_debug/
 *.sqlite3
 *.json
 *.env
+*.db
 
 /static/
 /media/

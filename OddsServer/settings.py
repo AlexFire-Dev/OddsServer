@@ -92,6 +92,16 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': "postgres",
+#         'USER': os.getenv('DB_USER', default='postgres'),
+#         'PASSWORD': "mysecretpassword",
+#         'HOST': os.getenv('DB_HOST', default='localhost'),
+#         'PORT': int(os.getenv('DB_PORT', default=5432)),
+#     }
+# }
 
 
 # Password validation
@@ -155,7 +165,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',

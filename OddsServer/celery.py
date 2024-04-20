@@ -20,10 +20,9 @@ app.autodiscover_tasks()
 
 
 # Celery Beat
-
 app.conf.beat_schedule = {
-#     'update-db-every-day': {
-#         'task': 'apps.moex.tasks.update_db',
-#         'schedule': crontab(minute=0, hour=2)
-#     }
+    'update-db': {
+        'task': 'apps.odds.tasks.update_db',
+        'schedule': crontab(minute='*/5'),
+    }
 }

@@ -11,7 +11,6 @@ import json
 def create_db_records(data: list) -> [OddData]:
     result = []
     for record in data:
-        # print(record)
         try:
             result.append(OddData(
                 game_id=record["game_id"],
@@ -27,8 +26,6 @@ def create_db_records(data: list) -> [OddData]:
                 od_add_time=record["151_1_add_time"],
                 stamp=f'{record["bookmaker"]}_{record["game_id"]}_{datetime.timestamp(record["151_1_add_time"])}'
             ))
-
-            # print(f'{record["bookmaker"]}_{record["game_id"]}_{datetime.timestamp(record["151_1_add_time"])}')
         except KeyError:
             print("Fail")
     return result
@@ -36,20 +33,16 @@ def create_db_records(data: list) -> [OddData]:
 
 @app.task
 def update_db():
+    """ update_db.delay() """
+
     manager = APIManager()
     games_info = manager.get_data(use_net=True)
-    print(json.dumps(games_info, indent=4))
+    # print(json.dumps(games_info, indent=4))
     games_info = collect(games_info, debug=False)
-    print(len(games_info))
-    print(games_info)
+    # print(len(games_info))
+    # print(games_info)
 
     data_to_add = create_db_records(games_info)
     print("Records to add:", len(data_to_add))
 
     OddData.objects.bulk_create(data_to_add, ignore_conflicts=True)
-
-
-# test_sum.delay()
-@app.task
-def test_sum():
-    print(2+2)
