@@ -22,3 +22,7 @@ jobs:
           script: |
             cd ${{ secrets.DIRECTORY }}
             ./update.sh
+            cd
+            cd services/Nginx
+            docker compose down -v
+            docker compose up -d
