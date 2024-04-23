@@ -22,12 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@2xqlw$(!v@rk-7y)=t9j)2_w60o40-&wn(qvv-_m$@bbf1s7y'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-@2xqlw$(!v@rk-7y)=t9j)2_w60o40-&wn(qvv-_m$@bbf1s7y')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(int(os.getenv('DJANGO_DEBUG', '1')))
 
-ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = [os.getenv('DJANGO_CSRF', 'http://127.0.0.1:8000')]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -86,22 +87,25 @@ WSGI_APPLICATION = 'OddsServer.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': "postgres",
-#         'USER': os.getenv('DB_USER', default='postgres'),
-#         'PASSWORD': "mysecretpassword",
-#         'HOST': os.getenv('DB_HOST', default='localhost'),
-#         'PORT': int(os.getenv('DB_PORT', default=5432)),
-#     }
-# }
+
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.getenv('POSTGRESQL_NAME'),
+            'USER': os.getenv('POSTGRESQL_USER', default='postgres'),
+            'PASSWORD': os.getenv('POSTGRESQL_PASSWORD'),
+            'HOST': os.getenv('POSTGRESQL_HOST', default='localhost'),
+            'PORT': int(os.getenv('POSTGRESQL_PORT', default=5432)),
+        }
+    }
 
 
 # Password validation

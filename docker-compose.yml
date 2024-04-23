@@ -1,0 +1,57 @@
+version: '3.8'
+
+
+services:
+  web:
+    build: .
+    command: ["./web.sh"]
+    volumes:
+      - ./static/:/static/
+      - ./media/:/media/
+    env_file:
+      - ./conf.env
+    ports:
+      - "220:220"
+    networks:
+      - defaulf
+      - db
+      - redis
+    restart: unless-stopped
+
+  celery:
+    build: .
+    command: celery -A OddsServer worker -l info
+    env_file:
+      - ./conf.env
+    networks:
+      - defaulf
+      - db
+      - redis
+    depends_on:
+      - web
+    restart: unless-stopped
+
+  beat:
+    build: .
+    command: celery -A OddsServer beat -l info
+    env_file:
+      - ./conf.env
+    networks:
+      - defaulf
+      - db
+      - redis
+    depends_on:
+      - web
+      - celery
+    restart: unless-stopped
+
+
+networks:
+  defaulf:
+    driver: bridge
+  db:
+    name: postgresql_defaulf
+    external: true
+  redis:
+    name: redis_default
+    external: true

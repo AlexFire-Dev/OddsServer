@@ -1,0 +1,14 @@
+# Ignore everything
+**
+
+# Allowed
+!nn/
+!apps/
+!temp/
+!assets/
+!templates/
+!OddsServer/
+
+!manage.py
+!requirements.txt
+!web.sh

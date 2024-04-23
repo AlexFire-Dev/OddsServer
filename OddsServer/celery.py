@@ -23,6 +23,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'update-db': {
         'task': 'apps.odds.tasks.update_db',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/15'),
     }
 }
