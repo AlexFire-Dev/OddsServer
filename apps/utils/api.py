@@ -3,16 +3,17 @@ import json
 import asyncio
 
 import urllib.parse
+import datetime
 import aiohttp
 
 
 class APIManager:
-    def __init__(self):
-        self.login = os.getenv("API_LOGIN")
-        self.token = os.getenv("API_TOKEN")
-        print("Logged in as:", self.login)
+    def __init__(self, login, token, api_address):
+        self.login = login
+        self.token = token
+        # print("Logged in as:", self.login)
 
-        self.base_address = os.getenv("API_ADDRESS")
+        self.base_address = api_address
 
     def get_default_context(self, task: str) -> dict:
         context = {
@@ -25,23 +26,34 @@ class APIManager:
     def create_url(self, path: str, **kwargs) -> str:
         return "https://" + self.base_address + '/' + path + '?' + urllib.parse.urlencode(kwargs)
 
-    async def get_games(self) -> list:
+    async def get_games(self, forward_days: int = 0) -> list:
         async with aiohttp.ClientSession() as session:
             context = self.get_default_context("predata")
             context["sport"] = "esport"
-            context["day"] = "20240420"  # today
 
-            url = self.create_url("api/get.php/", **context)
+            days = ["today"]
+            today = datetime.date.today()
 
-            async with session.get(url) as resp:
-                result = await resp.json()
+            for i in range(forward_days):
+                days.append((today + datetime.timedelta(days=(i+1))).strftime("%Y%m%d"))
 
-                if resp.status == 200:
-                    games = result["games_pre"]
-                    for game in games:
-                        game["date"] = result["date_games"]
-                    return games
-                return []
+            res = []
+
+            for day in days:
+                context["day"] = day
+
+                url = self.create_url("api/get.php/", **context)
+
+                async with session.get(url) as resp:
+                    result = await resp.json()
+
+                    if resp.status == 200:
+                        games = result["games_pre"]
+                        for game in games:
+                            game["date"] = result["date_games"]
+                        res += games
+
+            return res
 
     async def get_game_info(self, session: aiohttp.ClientSession, game: dict):
         game_id = game["game_id"]
@@ -68,9 +80,9 @@ class APIManager:
             result = await asyncio.gather(*tasks)
             return result
 
-    def get_data(self, use_net: bool = False, debug: bool = False):
+    def get_data(self, use_net: bool = False, debug: bool = False, forward_days: int = 0):
         if use_net:
-            games = asyncio.run(self.get_games())
+            games = asyncio.run(self.get_games(forward_days=forward_days))
             games_info = asyncio.run(self.get_games_info(games))
 
             # with open("temp/get_games.json", 'w') as file:

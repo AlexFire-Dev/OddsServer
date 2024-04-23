@@ -152,6 +152,12 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 
+# Rest API envs
+API_LOGIN = os.getenv("API_LOGIN")
+API_TOKEN = os.getenv("API_TOKEN")
+API_ADDRESS = os.getenv("API_ADDRESS")
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 

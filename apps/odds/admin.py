@@ -5,4 +5,4 @@ from .models import OddData
 
 @admin.register(OddData)
 class OddDataAdmin(admin.ModelAdmin):
-    list_display = ("game_id", "od_add_time", "stamp")
+    list_display = ("game_id", "bookmaker", "time", "od_add_time", "stamp")

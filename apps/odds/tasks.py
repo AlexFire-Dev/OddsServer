@@ -1,4 +1,5 @@
 from OddsServer.celery import app
+from django.conf import settings
 
 from apps.utils.handler import collect
 from apps.utils.api import APIManager
@@ -35,14 +36,24 @@ def create_db_records(data: list) -> [OddData]:
 def update_db():
     """ update_db.delay() """
 
-    manager = APIManager()
-    games_info = manager.get_data(use_net=True)
-    # print(json.dumps(games_info, indent=4))
-    games_info = collect(games_info, debug=False)
-    # print(len(games_info))
-    # print(games_info)
+    print("Requesting data => ", end='')
+    try:
+        manager = APIManager(
+            login=settings.API_LOGIN,
+            token=settings.API_TOKEN,
+            api_address=settings.API_ADDRESS
+        )
 
-    data_to_add = create_db_records(games_info)
-    print("Records to add:", len(data_to_add))
+        games_info = manager.get_data(use_net=True, forward_days=1)
+        games_info = collect(games_info, debug=False)
+        print("OK!")
 
-    OddData.objects.bulk_create(data_to_add, ignore_conflicts=True)
+        data_to_add = create_db_records(games_info)
+        print(f"Saving {len(data_to_add)} rows => ", end='')
+        try:
+            OddData.objects.bulk_create(data_to_add, ignore_conflicts=True)
+            print("OK!")
+        except:
+            print("FAIL!")
+    except:
+        print("FAIL!")
