@@ -20,6 +20,6 @@ class OddDataViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request) -> Response:
-        queryset = OddData.objects.filter(date=datetime.now().date()).order_by("-od_add_time")
+        queryset = OddData.objects.filter(date=datetime.date(2024, 5, 27)).order_by("-od_add_time")
         serializer = OddDataSerializer(queryset, many=True)
         return Response(serializer.data)
